@@ -325,6 +325,33 @@ func ParseCSV(csvinfo string) string {
 	xdata = xdata + "Columns " + strconv.Itoa(cc) + "<BR>"
 	xdata = xdata + "Rows " + strconv.Itoa(rc) + "<BR>"
 
+	xdata = xdata + "<TABLE style='width:100%'>"
+
+	xdata = xdata + "<TR>"
+	xdata = xdata + "<TD>"
+	cdata := ""
+	for x := 0; x < len(csvinfo); x++ {
+		chr = csvinfo[x : x+1]
+		ascval = asciistring.StringToASCII(chr)
+		switch {
+		case ascval == 13:
+		case ascval == 10:
+			ccheck = false
+			xdata = xdata + "</TD>"
+			xdata = xdata + "</TR>"
+
+		case ascval == 44:
+			xdata = xdata + cdata
+			xdata = xdata + "</TD>"
+			xdata = xdata + "<TD>"
+			cdata = ""
+
+		default:
+			cdata = cdata + chr
+
+		}
+	}
+
 	//	xdata = xdata + csvinfo
 	return xdata
 
