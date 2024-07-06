@@ -8,6 +8,9 @@ import (
 	"os"
 	"os/exec"
 	"runtime"
+	"strconv"
+
+	asciistring "github.com/Com1Software/Go-ASCII-String-Package"
 )
 
 var xip = fmt.Sprintf("%s", GetOutboundIP())
@@ -300,11 +303,29 @@ func uploadCSVFile(w http.ResponseWriter, r *http.Request) {
 // ----------------------------------------------------------------
 func ParseCSV(csvinfo string) string {
 	xdata := ""
+	ascval := 0
+	chr := ""
+	cc := 0
+	rc := 0
+	ccheck := true
+	for x := 0; x < len(csvinfo); x++ {
+		chr = csvinfo[x : x+1]
+		ascval = asciistring.StringToASCII(chr)
+		switch {
+		case ascval == 13:
+		case ascval == 10:
+			rc++
+			ccheck = false
+		case ascval == 44:
+			if ccheck {
+				cc++
+			}
+		}
+	}
+	xdata = xdata + "Columns " + strconv.Itoa(cc) + "<BR>"
+	xdata = xdata + "Rows " + strconv.Itoa(rc) + "<BR>"
 
-	xdata = xdata + "Columns <BR>"
-	xdata = xdata + "Rows <BR>"
-	xdata = xdata + csvinfo
-
+	//	xdata = xdata + csvinfo
 	return xdata
 
 }
